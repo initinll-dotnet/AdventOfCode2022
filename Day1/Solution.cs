@@ -24,17 +24,18 @@ public class Solution
     {
         var content = await File.ReadAllTextAsync("./Day1/input.txt");
 
-        var maxCalorie = content
+        var totalCalories = content
             .Split("\r\n\r\n")
-            .Select(c =>
+            .Select(elfList => elfList.Split("\r\n"))
+            .Select(elfCalories => 
             {
-                var elfsCal = c
-                    .Split("\r\n")
-                    .Select(cal => int.Parse(cal))
-                    .Sum();
-                return elfsCal;
-            }).Max();
+                return elfCalories
+                    .Select(calorie => int.Parse(calorie))
+                    .Sum();                        
+            })
+            .Max();
 
-        return maxCalorie;
+
+        return totalCalories;
     }
 }
