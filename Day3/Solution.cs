@@ -50,48 +50,23 @@ public class Solution
 
     private static int GetScore(IEnumerable<string> supplies)
     {
-        var itemPriorities = ItemPriority.GetItemPriorities();
-
         var prioritiesSum = supplies
                 .Select(supply => GetDuplicateItems(supply))
                 .SelectMany(items => items)
-                .SelectMany(duplicateItem => 
-                {
-                    var priority = itemPriorities
-                        .Where(p => p.Item == duplicateItem)
-                        .Select(p => p.Priority);
-
-                    return priority;
-                })
+                .Select(duplicateItem => GetItemPriority(duplicateItem))
                 .Sum();
 
         return prioritiesSum;
     }
-}
 
-public class ItemPriority
-{
-    public char Item { get; set; }
-    public int Priority { get; set; }
-
-    public static IEnumerable<ItemPriority> GetItemPriorities()
+    private static int GetItemPriority(char item)
     {
-        List<ItemPriority> priorities = new List<ItemPriority>();
+        if (item >= 'a' && item <= 'z')
+            return (int)item - 96;
+        
+        if (item >= 'A' && item <= 'Z')
+            return (int)item - 38;
 
-        int index = 0;
-
-        for (char c = 'a'; c <= 'z'; c++)
-        {
-            index++;
-            priorities.Add(new ItemPriority{ Item = c, Priority = index });
-        }
-
-        for (char c = 'A'; c <= 'Z'; c++)
-        {
-            index++;
-            priorities.Add(new ItemPriority{ Item = c, Priority = index });
-        }
-
-        return priorities.ToList();
+        return 0;
     }
 }
