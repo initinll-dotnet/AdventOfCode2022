@@ -28,6 +28,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <None Update="Day5/input.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="ConsoleTables" Version="2.4.2" />
   </ItemGroup>
 
