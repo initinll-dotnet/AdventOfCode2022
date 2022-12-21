@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using ConsoleTables;
 
 namespace Day6;
@@ -38,12 +39,17 @@ public class Solution
         return datastreams;
     }
 
-    private async static IAsyncEnumerable<char> RelayDataStream(string datastream)
+    private async static IAsyncEnumerable<char> RelayDataStream(string datastream, [EnumeratorCancellation]CancellationToken cancellationToken = default)
     {
-        var stream = await Task.Run(() => datastream.ToCharArray());
+        var stream = await Task.Run(() => datastream.ToCharArray(), cancellationToken);
 
         foreach (var item in stream)
         {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                break;
+            }
+                
             //await Task.Delay(1000);
             yield return item;
         }
@@ -54,13 +60,15 @@ public class Solution
         var data = string.Empty;
         bool isMarkerFound = false;
 
-        await foreach (var item in RelayDataStream(datastream))
+        var cancellationTokenSource = new CancellationTokenSource();
+
+        await foreach (var item in RelayDataStream(datastream).WithCancellation(cancellationTokenSource.Token))
         {
             data += item;
             isMarkerFound = DetectMarker(data, startOfPacketMarkerCharactersCount);           
 
             if (isMarkerFound)
-                break;
+                cancellationTokenSource.Cancel();
         }
 
         return data.Length;
@@ -91,5 +99,4 @@ public class Solution
 
         return false;
     }
-
 }
