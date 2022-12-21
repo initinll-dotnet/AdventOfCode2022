@@ -1,3 +1,5 @@
+using ConsoleTables;
+
 namespace Day5;
 
 public class Solution
@@ -12,6 +14,14 @@ public class Solution
 
         var instructions = FetchInstructions(rawInstructions);
 
+        var rearrangedStacks = FetchRearrangedStacks(stacks.ToList(), instructions);
+
+        var topCrates = GetTopCrates(rearrangedStacks);
+
+        var message = new ConsoleTable("The Message");
+        message.AddRow(topCrates);
+
+        message.Write();
         Console.WriteLine();    
     }
 
@@ -93,6 +103,40 @@ public class Solution
         }
 
         return instructions;
+    }
+
+    private static IEnumerable<Stack<string>> FetchRearrangedStacks(List<Stack<string>> stacks, IEnumerable<Instruction> instructions)
+    {
+        foreach (var instruction in instructions)
+        {
+            var noOfCratesToBeMoved = instruction.Move;
+            var sourceStackIndex = instruction.From - 1;
+            var destinationStackIndex = instruction.To - 1;
+            var sourceStack = stacks.ElementAt(sourceStackIndex);
+            var destinationStack = stacks.ElementAt(destinationStackIndex);
+
+            for (int i = 0; i < noOfCratesToBeMoved; i++)
+            {
+                if (sourceStack.TryPop(out string poppedCrate))
+                {
+                    destinationStack.Push(poppedCrate);
+                }
+            }
+        }
+
+        return stacks;
+    }
+
+    private static string GetTopCrates(IEnumerable<Stack<string>> rearrangedStacks)
+    {
+        var topCrates = string.Empty;
+
+        foreach (var stack in rearrangedStacks)
+        {
+            topCrates += stack.Peek().Replace("[","").Replace("]","");
+        }
+
+        return topCrates;
     }
 
     private static int GetStackColumns(string rawStacks)
