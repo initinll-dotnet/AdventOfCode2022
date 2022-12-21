@@ -13,15 +13,19 @@ public class Solution
 
         var datastreams = await ReadInput();
 
-        var table = new ConsoleTable("Message", "Start of Packet");
+        var markerTable = new ConsoleTable("Sequence of characters that are all different");
+        markerTable.AddRow(startOfPacketMarkerCharactersCount);
+
+        var messageTable = new ConsoleTable("Message", "Start of Packet");
 
         foreach (var datastream in datastreams)
         {   
             var marker = await ConsumeDataStream(datastream, startOfPacketMarkerCharactersCount);
-            table.AddRow(datastream, marker);
+            messageTable.AddRow(datastream, marker);
         }
 
-        table.Write();
+        markerTable.Write();
+        messageTable.Write();
         Console.WriteLine();
     }
 
