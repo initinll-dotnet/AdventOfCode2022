@@ -6,6 +6,9 @@ public class Solution
 {
     public async static Task Print()
     {
+        // sequence of characters that are all different 
+        var startOfPacketMarkerCharactersCount = 4;
+        
         Console.WriteLine("--- Day 6: Tuning Trouble ---");
 
         var datastreams = await ReadInput();
@@ -14,7 +17,7 @@ public class Solution
 
         foreach (var datastream in datastreams)
         {   
-            var marker = await ConsumeDataStream(datastream);
+            var marker = await ConsumeDataStream(datastream, startOfPacketMarkerCharactersCount);
             table.AddRow(datastream, marker);
         }
 
@@ -42,7 +45,7 @@ public class Solution
         }
     }
 
-    private async static Task<int> ConsumeDataStream(string datastream)
+    private async static Task<int> ConsumeDataStream(string datastream, int startOfPacketMarkerCharactersCount)
     {
         var data = string.Empty;
         bool isMarkerFound = false;
@@ -50,7 +53,7 @@ public class Solution
         await foreach (var item in RelayDataStream(datastream))
         {
             data += item;
-            isMarkerFound = DetectMarker(data, 4);           
+            isMarkerFound = DetectMarker(data, startOfPacketMarkerCharactersCount);           
 
             if (isMarkerFound)
                 break;
