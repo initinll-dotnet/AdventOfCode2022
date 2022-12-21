@@ -14,4 +14,4 @@
 // await Day5.Solution.Print();
 
 // Day6
-Day6.Solution.Print();
+await Day6.Solution.Print();
